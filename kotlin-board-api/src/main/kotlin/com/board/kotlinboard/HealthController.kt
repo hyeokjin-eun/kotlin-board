@@ -1,4 +1,4 @@
-package com.board.kotlinboard.controller
+package com.board.kotlinboard
 
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
