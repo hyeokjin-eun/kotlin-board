@@ -12,7 +12,7 @@ import org.springframework.web.filter.CharacterEncodingFilter
 
 @ExtendWith(SpringExtension::class)
 @WebMvcTest
-open class ControllerTestBaseConfig (@Autowired private var webApplicationContext: WebApplicationContext) {
+open class ControllerTestBaseConfig(@Autowired private var webApplicationContext: WebApplicationContext) {
 
     protected var mockMvc: MockMvc = MockMvcBuilders
             .webAppContextSetup(webApplicationContext)
