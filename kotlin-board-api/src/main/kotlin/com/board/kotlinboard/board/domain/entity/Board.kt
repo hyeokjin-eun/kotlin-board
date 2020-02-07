@@ -1,6 +1,5 @@
-package com.board.kotlinboard.board.domain
+package com.board.kotlinboard.board.domain.entity
 
-import lombok.Builder
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id

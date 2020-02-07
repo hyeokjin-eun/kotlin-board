@@ -1,12 +1,16 @@
 package com.board.kotlinboard.board.domain
 
 
+import com.board.kotlinboard.board.domain.entity.Board
 import com.board.kotlinboard.board.infra.BoardRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.test.context.junit.jupiter.SpringExtension
 
+@ExtendWith(SpringExtension::class)
 @DataJpaTest
 internal class BoardTest(@Autowired val boardRepository: BoardRepository) {
 
@@ -36,7 +40,7 @@ internal class BoardTest(@Autowired val boardRepository: BoardRepository) {
 
         val newBoard = boardRepository.save(board)
 
-        assertThat(newBoard.title).isEqualTo(title)
+        assertThat(newBoard.title).isEqualTo("제목")
         assertThat(newBoard.content).isEqualTo(content)
         assertThat(newBoard.id).isNotNull()
     }
