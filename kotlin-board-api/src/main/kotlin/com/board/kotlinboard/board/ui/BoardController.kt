@@ -12,5 +12,5 @@ import javax.validation.Valid
 class BoardController(@Autowired val boardService: BoardService) {
 
     @PostMapping("")
-    fun create(@Valid @RequestBody boardCreateReq: BoardCreateReq): BoardCreateRes = boardService.create()
+    fun create(@Valid @RequestBody boardCreateReq: BoardCreateReq): BoardCreateRes = boardService.create(boardCreateReq.title, boardCreateReq.content)
 }

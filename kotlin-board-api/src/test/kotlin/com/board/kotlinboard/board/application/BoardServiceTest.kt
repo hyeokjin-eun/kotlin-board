@@ -1,12 +1,43 @@
 package com.board.kotlinboard.board.application
 
-import org.junit.jupiter.api.Test
+import com.board.kotlinboard.board.domain.entity.Board
+import com.board.kotlinboard.board.infra.BoardRepository
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
+import org.mockito.Mock
+import org.mockito.Mockito.verify
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.junit.jupiter.SpringExtension
 
-import org.junit.jupiter.api.Assertions.*
-
+@ExtendWith(SpringExtension::class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class BoardServiceTest {
 
-    @Test
-    fun create() {
+    private lateinit var boardService: BoardService
+
+    @Mock
+    private lateinit var boardRepository: BoardRepository
+
+    @BeforeEach
+    fun setUp() {
+        this.boardService = BoardService(boardRepository)
+    }
+
+    @ParameterizedTest
+    @CsvSource("제목,내용", "어쩌구,저쩌구")
+    fun create(title: String, content: String) {
+        val board = Board(title, content)
+
+        val boardCreateRes = boardService.create(title, content)
+
+        verify(boardRepository).save(board)
+
+        assertThat(boardCreateRes.title).isEqualTo(title)
+        assertThat(boardCreateRes.title).isEqualTo(title)
+
+        print(boardCreateRes)
     }
 }

@@ -4,18 +4,13 @@ import com.board.kotlinboard.ControllerTestBaseConfig
 import com.board.kotlinboard.board.application.BoardService
 import com.board.kotlinboard.board.domain.entity.Board
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.eq
-import org.mockito.BDDMockito.given
 import org.mockito.Mockito.verify
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.context.WebApplicationContext
 
@@ -35,7 +30,7 @@ internal class BoardControllerTest(webApplicationContext: WebApplicationContext)
                 .content(boardJson))
                 .andExpect(status().isOk)
 
-        verify(boardService).create()
+        verify(boardService).create(title, content)
     }
 
     @Test
