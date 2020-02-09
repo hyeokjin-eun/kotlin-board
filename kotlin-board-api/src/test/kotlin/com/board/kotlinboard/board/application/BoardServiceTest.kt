@@ -7,33 +7,29 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mock
+import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.mockito.BDDMockito.given as given
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-internal class BoardServiceTest {
-
-    private lateinit var boardService: BoardService
+internal class BoardServiceTest(@Autowired private var boardService: BoardService) {
 
     @Mock
     private lateinit var boardRepository: BoardRepository
 
-    @BeforeEach
-    fun setUp() {
-        this.boardService = BoardService(boardRepository)
-    }
-
     @ParameterizedTest
     @CsvSource("제목,내용", "어쩌구,저쩌구")
     fun create(title: String, content: String) {
-        val board = Board(title, content)
 
         val boardCreateRes = boardService.create(title, content)
 
-        verify(boardRepository).save(board)
+        verify(boardRepository).save(Board(title, content))
 
         assertThat(boardCreateRes.title).isEqualTo(title)
         assertThat(boardCreateRes.title).isEqualTo(title)

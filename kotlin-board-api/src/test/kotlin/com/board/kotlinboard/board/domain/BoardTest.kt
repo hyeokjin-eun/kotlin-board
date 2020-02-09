@@ -37,8 +37,8 @@ internal class BoardTest(@Autowired val boardRepository: BoardRepository) {
         val board = Board(title, content)
         val newBoard = boardRepository.save(board)
 
-        assertThat(newBoard.title).isEqualTo(title)
-        assertThat(newBoard.content).isEqualTo(content)
-        assertThat(newBoard.id).isNotNull()
+        assertThat(newBoard?.title).isEqualTo(title)
+        assertThat(newBoard?.content).isEqualTo(content)
+        assertThat(newBoard?.id).isNotNull()
     }
 }

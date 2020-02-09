@@ -7,11 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class BoardService(@Autowired
-                   private var boardRepository: BoardRepository) {
+class BoardService(@Autowired private var boardRepository: BoardRepository) {
 
     fun create(title: String, content: String):BoardCreateRes {
         val board:Board? = boardRepository.save(Board(title, content))
-        return BoardCreateRes(board!!.id!!, board.title, board.content)
+        return BoardCreateRes(board?.id!!, board.title, board.content)
+    }
+
+    fun detail(id: Long): Board {
+        return boardRepository.findById(id).orElse(null)
     }
 }
