@@ -6,8 +6,8 @@ import javax.persistence.Id
 
 @Entity
 data class Board(
-        val title: String,
-        val content: String,
+        var title: String,
+        var content: String,
         @Id @GeneratedValue
-        val id: Long? = null
+        var id: Long? = null
 )
