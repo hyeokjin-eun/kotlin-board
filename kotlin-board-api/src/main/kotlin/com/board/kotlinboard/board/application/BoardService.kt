@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
 import java.util.stream.Collectors
 
 @Service
-class BoardService(@Autowired private var boardRepository: BoardRepository) {
+class BoardService(private var boardRepository: BoardRepository) {
 
     fun create(title: String, content: String):BoardCreateRes {
         val board:Board? = boardRepository.save(Board(title, content))

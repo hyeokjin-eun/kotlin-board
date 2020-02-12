@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface BoardRepository : JpaRepository<Board, Long> {
-    fun save(board: Board): Board?
+    fun save(board: Board): Board
 }
