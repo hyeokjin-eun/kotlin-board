@@ -1,9 +1,11 @@
 package com.board.kotlinboard.board.application
 
+import com.board.kotlinboard.board.domain.dto.response.BoardListRes
 import com.board.kotlinboard.board.domain.entity.Board
 import com.board.kotlinboard.board.infra.BoardRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
@@ -12,6 +14,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import java.util.ArrayList
 
 @ExtendWith(SpringExtension::class)
 internal class BoardServiceTest {
@@ -29,7 +32,7 @@ internal class BoardServiceTest {
 
     @ParameterizedTest
     @CsvSource("제목,내용", "어쩌구,저쩌구")
-    fun create(title: String, content: String) {
+    fun `Board 저장 Service`(title: String, content: String) {
         given(boardRepository.save(Board(title, content))).willReturn(Board(title, content, 1L))
 
         val boardCreateRes = boardService.create(title, content)
@@ -39,5 +42,32 @@ internal class BoardServiceTest {
         assertThat(boardCreateRes.title).isEqualTo(title)
         assertThat(boardCreateRes.title).isEqualTo(title)
         assertThat(boardCreateRes.id).isNotNull()
+    }
+
+    @Test
+    fun `Board List 조회 Service`() {
+        val mockBoardList = listOf(
+                Board("제목1", "내용1", 1L),
+                Board("제목2", "내용2", 2L),
+                Board("제목3", "내용3", 3L)
+        )
+
+        given(boardRepository.findAll()).willReturn(mockBoardList)
+
+        val boardList = boardService.list()
+
+        verify(boardRepository).findAll()
+
+        assertThat(boardList[0].title).isEqualTo(mockBoardList[0].title)
+        assertThat(boardList[1].title).isEqualTo(mockBoardList[1].title)
+        assertThat(boardList[2].title).isEqualTo(mockBoardList[2].title)
+    }
+
+    @ParameterizedTest
+    @CsvSource("1", "2")
+    fun `Board Detail 조회 Service`(id: Long) {
+        val mockBoardDetail = Board("제목", "내용", id)
+
+        given(boardRepository.findById(id)).willReturn(mockBoardDetail)
     }
 }
