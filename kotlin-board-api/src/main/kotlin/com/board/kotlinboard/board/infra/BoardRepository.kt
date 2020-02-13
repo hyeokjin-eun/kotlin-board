@@ -8,6 +8,4 @@ import java.util.*
 @Repository
 interface BoardRepository : JpaRepository<Board, Long> {
     fun save(board: Board): Board
-
-    override fun findById(id: Long): Optional<Board>
 }

@@ -1,11 +1,13 @@
 package com.board.kotlinboard.board.application
 
-import com.board.kotlinboard.board.domain.dto.response.BoardListRes
+import com.board.kotlinboard.board.domain.Exception.BoardNotFoundException
+import com.board.kotlinboard.board.domain.dto.request.BoardUpdateReq
 import com.board.kotlinboard.board.domain.entity.Board
 import com.board.kotlinboard.board.infra.BoardRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
@@ -14,7 +16,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import java.util.ArrayList
+import java.util.*
 
 @ExtendWith(SpringExtension::class)
 internal class BoardServiceTest {
@@ -68,6 +70,30 @@ internal class BoardServiceTest {
     fun `Board Detail 조회 Service`(id: Long) {
         val mockBoardDetail = Board("제목", "내용", id)
 
-        given(boardRepository.findById(id)).willReturn(mockBoardDetail)
+        given(boardRepository.findById(id)).willReturn(Optional.of(mockBoardDetail))
+
+        val boardDetail = boardService.detail(id)
+
+        verify(boardRepository).findById(id)
+
+        assertThat(boardDetail.id).isEqualTo(mockBoardDetail.id)
+        assertThat(boardDetail.title).isEqualTo(mockBoardDetail.title)
+        assertThat(boardDetail.content).isEqualTo(mockBoardDetail.content)
+    }
+
+    @ParameterizedTest
+    @CsvSource("100", "200")
+    fun `Board Detail 조회 Not Found`(id: Long) {
+        assertThrows<BoardNotFoundException>{
+            boardService.detail(id)
+        }
+    }
+
+    @ParameterizedTest
+    @CsvSource("1, 제목, 내용")
+    fun `Board 수정 Service`(id: Long, title: String, content: String) {
+
+        val boardUpdate = boardService.update(id, title, content)
+
     }
 }

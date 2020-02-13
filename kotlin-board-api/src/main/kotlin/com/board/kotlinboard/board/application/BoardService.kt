@@ -1,13 +1,12 @@
 package com.board.kotlinboard.board.application
 
-import com.board.kotlinboard.board.domain.dto.request.BoardUpdateReq
 import com.board.kotlinboard.board.domain.dto.response.BoardCreateRes
 import com.board.kotlinboard.board.domain.dto.response.BoardDetailRes
 import com.board.kotlinboard.board.domain.dto.response.BoardListRes
 import com.board.kotlinboard.board.domain.dto.response.BoardUpdateRes
 import com.board.kotlinboard.board.domain.entity.Board
 import com.board.kotlinboard.board.infra.BoardRepository
-import org.springframework.beans.factory.annotation.Autowired
+import com.board.kotlinboard.board.domain.Exception.BoardNotFoundException
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
 
@@ -15,8 +14,8 @@ import java.util.stream.Collectors
 class BoardService(private var boardRepository: BoardRepository) {
 
     fun create(title: String, content: String):BoardCreateRes {
-        val board:Board? = boardRepository.save(Board(title, content))
-        return BoardCreateRes(board?.id!!, board.title, board.content)
+        val board = boardRepository.save(Board(title, content))
+        return BoardCreateRes(board.id!!, board.title, board.content)
     }
 
     fun detail(id: Long): BoardDetailRes {
@@ -24,7 +23,7 @@ class BoardService(private var boardRepository: BoardRepository) {
                 .map { board ->
                     return@map BoardDetailRes(board.title, board.content, board.id!!)
                 }
-                .orElse(null)
+                .orElseThrow { BoardNotFoundException() }
     }
 
     fun list(): List<BoardListRes> {
@@ -35,20 +34,20 @@ class BoardService(private var boardRepository: BoardRepository) {
                 .collect(Collectors.toList())
     }
 
-    fun update(id: Long, boardUpdateReq: BoardUpdateReq): BoardUpdateRes {
+    fun update(id: Long, title: String, content: String): BoardUpdateRes {
         return boardRepository.findById(id)
                 .map {
-                    it.title = boardUpdateReq.title
-                    it.content = boardUpdateReq.content
+                    it.title = title
+                    it.content = content
                     return@map it
                 }
                 .map {
-                    return@map boardRepository.save(it)!!
+                    return@map boardRepository.save(it)
                 }
                 .map {
                     return@map BoardUpdateRes(it.id!!, it.title, it.content)
                 }
-                .orElse(null)
+                .orElseThrow { BoardNotFoundException() }
     }
 
     fun delete(id: Long): String {
@@ -59,6 +58,6 @@ class BoardService(private var boardRepository: BoardRepository) {
                 .map {
                     return@map "{}"
                 }
-                .orElse(null)
+                .orElseThrow { BoardNotFoundException() }
     }
 }

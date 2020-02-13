@@ -15,18 +15,33 @@ import javax.validation.Valid
 @RequestMapping("/board")
 class BoardController(@Autowired val boardService: BoardService) {
 
-    @GetMapping("{id}")
-    fun detail(@PathVariable id: Long): BoardDetailRes = boardService.detail(id)
-
     @PostMapping("")
-    fun create(@Valid @RequestBody boardCreateReq: BoardCreateReq): BoardCreateRes = boardService.create(boardCreateReq.title, boardCreateReq.content)
+    fun create(@Valid @RequestBody boardCreateReq: BoardCreateReq): BoardCreateRes {
+        return boardService.create(boardCreateReq.title, boardCreateReq.content)
+    }
 
     @GetMapping("")
-    fun list() : List<BoardListRes> = boardService.list()
+    fun list() : List<BoardListRes> {
+        return boardService.list()
+    }
+
+    @GetMapping("{id}")
+    fun detail(@PathVariable id: Long): BoardDetailRes{
+        print("test")
+        var result = boardService.detail(id)
+        print("test")
+        print("test")
+        print("test")
+        return result
+    }
 
     @PutMapping("{id}")
-    fun update(@PathVariable id: Long, @RequestBody boardUpdateReq: BoardUpdateReq) : BoardUpdateRes = boardService.update(id, boardUpdateReq)
+    fun update(@PathVariable id: Long, @RequestBody boardUpdateReq: BoardUpdateReq) : BoardUpdateRes {
+        return boardService.update(id, boardUpdateReq.title, boardUpdateReq.content)
+    }
 
     @DeleteMapping("{id}")
-    fun delete(@PathVariable id: Long) : String = boardService.delete(id)
+    fun delete(@PathVariable id: Long) : String {
+        return boardService.delete(id)
+    }
 }
