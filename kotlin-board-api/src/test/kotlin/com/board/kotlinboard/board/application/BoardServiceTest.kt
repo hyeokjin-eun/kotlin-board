@@ -11,6 +11,8 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import org.mockito.ArgumentMatchers
+import org.mockito.BDDMockito.any
 import org.mockito.BDDMockito.given
 import org.mockito.Mock
 import org.mockito.Mockito.verify
@@ -92,8 +94,16 @@ internal class BoardServiceTest {
     @ParameterizedTest
     @CsvSource("1, 제목, 내용")
     fun `Board 수정 Service`(id: Long, title: String, content: String) {
+        val mockBoardFind = Board(title, content, id)
+        val mockBoardSave = Board("제목 수정", "내용 수정", id)
 
+        given(boardRepository.save(mockBoardSave)).willReturn(mockBoardSave)
+        given(boardRepository.findById(id)).willReturn(Optional.of(mockBoardFind))
+
+        //val boardDetail = boardService.detail(id)
         val boardUpdate = boardService.update(id, title, content)
 
+        verify(boardRepository).save(mockBoardSave)
+        verify(boardRepository).findById(id)
     }
 }

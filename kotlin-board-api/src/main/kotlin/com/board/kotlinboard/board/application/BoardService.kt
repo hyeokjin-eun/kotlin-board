@@ -9,6 +9,7 @@ import com.board.kotlinboard.board.infra.BoardRepository
 import com.board.kotlinboard.board.domain.Exception.BoardNotFoundException
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
+import javax.transaction.Transactional
 
 @Service
 class BoardService(private var boardRepository: BoardRepository) {
@@ -34,20 +35,34 @@ class BoardService(private var boardRepository: BoardRepository) {
                 .collect(Collectors.toList())
     }
 
+    @Transactional
     fun update(id: Long, title: String, content: String): BoardUpdateRes {
-        return boardRepository.findById(id)
+
+        val test = boardRepository.findById(id)
                 .map {
                     it.title = title
                     it.content = content
                     return@map it
                 }
                 .map {
-                    return@map boardRepository.save(it)
+                    println("$it : Test")
+                    println("$it : Test")
+                    println("$it : Test")
+                    val board = boardRepository.save(Board(it.title, it.content, it.id))
+                    println("$board : Test")
+                    val boardUpdateRes = BoardUpdateRes(board.id!!, board.title, board.content)
+
+                    println("$board : Test")
+                    println("$boardUpdateRes : Test")
+
+                    return@map boardUpdateRes
                 }
-                .map {
+                /*.map {
                     return@map BoardUpdateRes(it.id!!, it.title, it.content)
-                }
-                .orElseThrow { BoardNotFoundException() }
+                }*/
+                .orElse(null)
+
+        return test
     }
 
     fun delete(id: Long): String {

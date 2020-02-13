@@ -2,6 +2,7 @@ package com.board.kotlinboard.board.ui
 
 import com.board.kotlinboard.ControllerTestBaseConfig
 import com.board.kotlinboard.board.application.BoardService
+import com.board.kotlinboard.board.domain.Exception.BoardNotFoundException
 import com.board.kotlinboard.board.domain.dto.request.BoardUpdateReq
 import com.board.kotlinboard.board.domain.dto.response.BoardCreateRes
 import com.board.kotlinboard.board.domain.dto.response.BoardDetailRes
@@ -92,6 +93,8 @@ internal class BoardControllerTest(webApplicationContext: WebApplicationContext)
     @ParameterizedTest
     @CsvSource("100", "200")
     fun `Board Detail 조회 Not Found`(id: Long) {
+        given(boardService.detail(id)).willThrow(BoardNotFoundException())
+
         mockMvc.perform(get("/board/$id"))
                 .andExpect(status().isNotFound)
     }
