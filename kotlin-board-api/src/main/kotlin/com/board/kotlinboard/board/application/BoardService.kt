@@ -35,34 +35,20 @@ class BoardService(private var boardRepository: BoardRepository) {
                 .collect(Collectors.toList())
     }
 
-    @Transactional
     fun update(id: Long, title: String, content: String): BoardUpdateRes {
-
-        val test = boardRepository.findById(id)
+        return boardRepository.findById(id)
                 .map {
                     it.title = title
                     it.content = content
                     return@map it
                 }
                 .map {
-                    println("$it : Test")
-                    println("$it : Test")
-                    println("$it : Test")
-                    val board = boardRepository.save(Board(it.title, it.content, it.id))
-                    println("$board : Test")
-                    val boardUpdateRes = BoardUpdateRes(board.id!!, board.title, board.content)
-
-                    println("$board : Test")
-                    println("$boardUpdateRes : Test")
-
-                    return@map boardUpdateRes
+                    return@map boardRepository.save(Board(it.title, it.content, it.id))
                 }
-                /*.map {
+                .map {
                     return@map BoardUpdateRes(it.id!!, it.title, it.content)
-                }*/
-                .orElse(null)
-
-        return test
+                }
+                .orElseThrow { BoardNotFoundException() }
     }
 
     fun delete(id: Long): String {

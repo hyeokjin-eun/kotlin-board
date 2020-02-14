@@ -27,12 +27,7 @@ class BoardController(@Autowired val boardService: BoardService) {
 
     @GetMapping("{id}")
     fun detail(@PathVariable id: Long): BoardDetailRes{
-        print("test")
-        var result = boardService.detail(id)
-        print("test")
-        print("test")
-        print("test")
-        return result
+        return boardService.detail(id)
     }
 
     @PutMapping("{id}")
