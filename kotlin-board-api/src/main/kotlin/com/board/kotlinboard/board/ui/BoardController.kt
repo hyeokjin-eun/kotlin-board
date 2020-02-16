@@ -41,7 +41,7 @@ class BoardController(@Autowired val boardService: BoardService) {
 
     @PutMapping("{id}")
     @ApiOperation(value = "게시글 수정", notes = "게시글을 수정한다.")
-    fun update(@PathVariable id: Long, @RequestBody boardUpdateReq: BoardUpdateReq): BoardUpdateRes {
+    fun update(@PathVariable id: Long, @Validated @RequestBody boardUpdateReq: BoardUpdateReq): BoardUpdateRes {
         return boardService.update(id, boardUpdateReq.title, boardUpdateReq.content)
     }
 

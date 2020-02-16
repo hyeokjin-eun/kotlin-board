@@ -20,8 +20,8 @@ class BoardService(private var boardRepository: BoardRepository) {
 
     fun detail(id: Long): BoardDetailRes {
         return boardRepository.findById(id)
-                .map { board ->
-                    return@map BoardDetailRes(board.title, board.content, board.id!!)
+                .map {
+                    return@map BoardDetailRes(it.title, it.content, it.id!!)
                 }
                 .orElseThrow { BoardNotFoundException() }
     }
