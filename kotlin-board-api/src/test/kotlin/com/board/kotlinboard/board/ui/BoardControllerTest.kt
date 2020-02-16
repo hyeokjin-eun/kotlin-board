@@ -56,6 +56,21 @@ internal class BoardControllerTest(webApplicationContext: WebApplicationContext)
     }
 
     @Test
+    fun `Board 저장 Controller Size Check`() {
+        val title = "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"
+        val content = "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789" +
+                    "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
+
+        val objectMapper = ObjectMapper()
+        val boardJson: String = objectMapper.writeValueAsString(Board(title, content))
+
+        mockMvc.perform(post("/board")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(boardJson))
+                .andExpect(status().isBadRequest)
+    }
+
+    @Test
     fun `Board List 조회 Controller` () {
         val boardList = listOf(
                 BoardListRes("제목1", "내용1", 1L),
