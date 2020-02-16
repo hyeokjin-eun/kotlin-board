@@ -1,15 +1,14 @@
 package com.board.kotlinboard.board.application
 
+import com.board.kotlinboard.board.domain.Exception.BoardNotFoundException
 import com.board.kotlinboard.board.domain.dto.response.BoardCreateRes
 import com.board.kotlinboard.board.domain.dto.response.BoardDetailRes
 import com.board.kotlinboard.board.domain.dto.response.BoardListRes
 import com.board.kotlinboard.board.domain.dto.response.BoardUpdateRes
 import com.board.kotlinboard.board.domain.entity.Board
 import com.board.kotlinboard.board.infra.BoardRepository
-import com.board.kotlinboard.board.domain.Exception.BoardNotFoundException
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
-import javax.transaction.Transactional
 
 @Service
 class BoardService(private var boardRepository: BoardRepository) {

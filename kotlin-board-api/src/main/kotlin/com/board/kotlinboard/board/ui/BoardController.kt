@@ -21,22 +21,22 @@ class BoardController(@Autowired val boardService: BoardService) {
     }
 
     @GetMapping("")
-    fun list() : List<BoardListRes> {
+    fun list(): List<BoardListRes> {
         return boardService.list()
     }
 
     @GetMapping("{id}")
-    fun detail(@PathVariable id: Long): BoardDetailRes{
+    fun detail(@PathVariable id: Long): BoardDetailRes {
         return boardService.detail(id)
     }
 
     @PutMapping("{id}")
-    fun update(@PathVariable id: Long, @RequestBody boardUpdateReq: BoardUpdateReq) : BoardUpdateRes {
+    fun update(@PathVariable id: Long, @RequestBody boardUpdateReq: BoardUpdateReq): BoardUpdateRes {
         return boardService.update(id, boardUpdateReq.title, boardUpdateReq.content)
     }
 
     @DeleteMapping("{id}")
-    fun delete(@PathVariable id: Long) : String {
+    fun delete(@PathVariable id: Long): String {
         return boardService.delete(id)
     }
 }

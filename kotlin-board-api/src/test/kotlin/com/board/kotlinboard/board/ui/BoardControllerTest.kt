@@ -117,4 +117,15 @@ internal class BoardControllerTest(webApplicationContext: WebApplicationContext)
 
         verify(boardService).update(id, title, content)
     }
+
+    @ParameterizedTest
+    @CsvSource("1, 제목1, 내용1", "2, 제목2, 내용2")
+    fun `Board 삭제 Controller`(id: Long, title: String, content: String) {
+        given(boardService.delete(id)).willReturn("{}")
+
+        mockMvc.perform(delete("/board/$id"))
+                .andExpect(status().isOk)
+
+        verify(boardService).delete(id)
+    }
 }

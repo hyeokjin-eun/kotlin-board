@@ -104,4 +104,19 @@ internal class BoardServiceTest {
         assertThat(boardUpdate.title).isEqualTo(title)
         assertThat(boardUpdate.content).isEqualTo(content)
     }
+
+    @ParameterizedTest
+    @CsvSource("1, 제목1, 내용1", "2, 제목2, 내용2")
+    fun `Board 삭제 Service`(id: Long, title: String, content: String) {
+        val mockBoardFind = Board(title, content, id)
+
+        given(boardRepository.findById(id)).willReturn(Optional.of(mockBoardFind))
+
+        val boardDelete = boardService.delete(id)
+
+        verify(boardRepository).findById(id)
+        verify(boardRepository).delete(Board(title, content, id))
+
+        assertThat(boardDelete).isEqualTo("{}")
+    }
 }
