@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/health")
-@Api(description = "서버 체크")
+@Api(description = "서버 체크", position = 100)
 class HealthController {
 
     @GetMapping("")
     @ApiOperation(value = "서버 체크", notes = "서버 동작 여부를 체크한다.")
-    fun health():String {
+    fun health(): String {
         return "Hello"
     }
 }

@@ -33,7 +33,7 @@ internal class BoardControllerTest(webApplicationContext: WebApplicationContext)
     @CsvSource("제목,내용,1", "어쩌구,저쩌구,2")
     fun `Board 저장 Controller`(title: String, content: String, id: Long) {
         val objectMapper = ObjectMapper()
-        val boardJson: String = objectMapper.writeValueAsString(Board(title, content))
+        val boardJson = objectMapper.writeValueAsString(Board(title, content))
 
         given(boardService.create(title, content)).willReturn(BoardCreateRes(id, title, content))
 
@@ -59,7 +59,7 @@ internal class BoardControllerTest(webApplicationContext: WebApplicationContext)
     fun `Board 저장 Controller Size Check`() {
         val title = "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"
         val content = "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789" +
-                    "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
+                "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
 
         val objectMapper = ObjectMapper()
         val boardJson: String = objectMapper.writeValueAsString(Board(title, content))
@@ -71,7 +71,7 @@ internal class BoardControllerTest(webApplicationContext: WebApplicationContext)
     }
 
     @Test
-    fun `Board List 조회 Controller` () {
+    fun `Board List 조회 Controller`() {
         val boardList = listOf(
                 BoardListRes("제목1", "내용1", 1L),
                 BoardListRes("제목2", "내용2", 2L),

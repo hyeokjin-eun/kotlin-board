@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/board")
-@Api(description = "게시판")
-class BoardController(@Autowired val boardService: BoardService) {
+@Api(description = "게시판", position = 2)
+class BoardController(val boardService: BoardService) {
 
     @PostMapping("")
     @ApiOperation(value = "게시글 생성", notes = "게시글을 생성한다.")

@@ -1,4 +1,4 @@
-package com.board.kotlin.board.ui
+package com.board.kotlin.common.config
 
 import com.google.common.collect.Lists.newArrayList
 import org.springframework.context.annotation.Bean
