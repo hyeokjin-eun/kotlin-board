@@ -25,7 +25,7 @@ internal class UserControllerTest(webApplicationContext: WebApplicationContext) 
 
     @ParameterizedTest
     @CsvSource("1, email@email.com, password", "2, test@test.com, test")
-    fun create(id: Long, email: String, password: String) {
+    fun `User 저장 Controller`(id: Long, email: String, password: String) {
         val objectMapper = ObjectMapper()
         val userJson = objectMapper.writeValueAsString(User(email, password))
 
@@ -39,5 +39,29 @@ internal class UserControllerTest(webApplicationContext: WebApplicationContext) 
                 .andExpect(jsonPath("\$.password").value(password))
 
         verify(userService).create(email, password)
+    }
+
+    @ParameterizedTest
+    @CsvSource("email, password")
+    fun `User 저장 Controller 이메일 형식 오류`(email: String, password: String) {
+        val objectMapper = ObjectMapper()
+        val userJson = objectMapper.writeValueAsString(User(email, password))
+
+        mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userJson))
+                .andExpect(status().isBadRequest)
+    }
+
+    @ParameterizedTest
+    @CsvSource("email@email.com, ''")
+    fun `User 저장 Controller 비밀번호 누락`(email: String, password: String) {
+        val objectMapper = ObjectMapper()
+        val userJson = objectMapper.writeValueAsString(User(email, password))
+
+        mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userJson))
+                .andExpect(status().isBadRequest)
     }
 }
