@@ -1,10 +1,12 @@
 package com.board.kotlin.user.domain.dto.request
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotEmpty
 
+@ApiModel(description = "유저 생성 요청 모델")
 data class UserCreateReq(@JsonProperty(value = "email")
                          @ApiModelProperty(value = "이메일", required = true, dataType = "String", position = 1)
                          @field:NotEmpty

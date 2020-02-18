@@ -4,7 +4,9 @@ import com.board.kotlin.ControllerTestBaseConfig
 import com.board.kotlin.common.domain.entity.User
 import com.board.kotlin.user.application.UserService
 import com.board.kotlin.user.domain.dto.response.UserCreateRes
+import com.board.kotlin.user.domain.dto.response.UserListRes
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.mockito.BDDMockito.given
@@ -12,6 +14,7 @@ import org.mockito.Mockito.verify
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -63,5 +66,24 @@ internal class UserControllerTest(webApplicationContext: WebApplicationContext) 
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(userJson))
                 .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `User 목록 조회 Controller`() {
+        val userList = listOf(
+                UserListRes(1L, "email@email.com", "password"),
+                UserListRes(2L, "test@test.com", "test"),
+                UserListRes(3L, "alvin@test.com", "alvin")
+        )
+
+        given(userService.list()).willReturn(userList)
+
+        mockMvc.perform(get("/user"))
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("\$.[0].email").value("email@email.com"))
+                .andExpect(jsonPath("\$.[1].email").value("test@test.com"))
+                .andExpect(jsonPath("\$.[2].email").value("alvin@test.com"))
+
+        verify(userService).list()
     }
 }

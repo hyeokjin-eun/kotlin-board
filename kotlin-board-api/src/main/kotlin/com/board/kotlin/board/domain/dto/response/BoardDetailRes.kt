@@ -1,8 +1,10 @@
 package com.board.kotlin.board.domain.dto.response
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 
+@ApiModel(description = "게시판 상세 응답 모델")
 data class BoardDetailRes(@JsonProperty(value = "title")
                           @ApiModelProperty(value = "제목", required = true, dataType = "String", position = 2)
                           var title: String,
