@@ -3,9 +3,12 @@ package com.board.kotlin.user.ui
 import com.board.kotlin.ControllerTestBaseConfig
 import com.board.kotlin.common.domain.entity.User
 import com.board.kotlin.user.application.UserService
+import com.board.kotlin.user.domain.Exception.UserNotFoundException
+import com.board.kotlin.user.domain.dto.request.UserUpdateReq
 import com.board.kotlin.user.domain.dto.response.UserCreateRes
 import com.board.kotlin.user.domain.dto.response.UserDetailRes
 import com.board.kotlin.user.domain.dto.response.UserListRes
+import com.board.kotlin.user.domain.dto.response.UserUpdateRes
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -15,8 +18,7 @@ import org.mockito.Mockito.verify
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.context.WebApplicationContext
@@ -100,5 +102,65 @@ internal class UserControllerTest(webApplicationContext: WebApplicationContext) 
                 .andExpect(jsonPath("\$.password").value(password))
 
         verify(userService).detail(id)
+    }
+
+    @ParameterizedTest
+    @CsvSource("404")
+    fun `User 상세 조회 User Not Found`(id: Long) {
+        given(userService.detail(id)).willThrow(UserNotFoundException())
+
+        mockMvc.perform(get("/user/$id"))
+                .andExpect(status().isNotFound)
+
+        verify(userService).detail(id)
+    }
+
+    @ParameterizedTest
+    @CsvSource("1, update@email.com, updatePassword", "2, update@test.com, updateTest")
+    fun `User 수정 Controller`(id: Long, email: String, password: String) {
+        val mockUserUpdateRes = UserUpdateRes(id, email, password)
+
+        val objectMapper = ObjectMapper()
+        val userJson = objectMapper.writeValueAsString(UserUpdateReq(email, password))
+
+        given(userService.update(id, UserUpdateReq(email, password))).willReturn(mockUserUpdateRes)
+
+        mockMvc.perform(put("/user/$id")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userJson))
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("\$.id").value(id))
+                .andExpect(jsonPath("\$.email").value(email))
+                .andExpect(jsonPath("\$.password").value(password))
+
+        verify(userService).update(id, UserUpdateReq(email, password))
+    }
+
+    @ParameterizedTest
+    @CsvSource("404, update@email.com, updatePassword")
+    fun `User 수정 Controller User Not Found`(id: Long, email: String, password: String) {
+        val objectMapper = ObjectMapper()
+        val userJson = objectMapper.writeValueAsString(UserUpdateReq(email, password))
+
+        given(userService.update(id, UserUpdateReq(email, password))).willThrow(UserNotFoundException())
+
+        mockMvc.perform(put("/user/$id")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userJson))
+                .andExpect(status().isNotFound)
+
+        verify(userService).update(id, UserUpdateReq(email, password))
+    }
+
+    @ParameterizedTest
+    @CsvSource("1, '', ''", "1, test, password", "1, 'test@test.com', ''")
+    fun `User 수정 Controller 필수 파라미터 누락`(id: Long, email: String, password: String) {
+        val objectMapper = ObjectMapper()
+        val userJson = objectMapper.writeValueAsString(UserUpdateReq(email, password))
+
+        mockMvc.perform(put("/user/$id")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userJson))
+                .andExpect(status().isBadRequest)
     }
 }

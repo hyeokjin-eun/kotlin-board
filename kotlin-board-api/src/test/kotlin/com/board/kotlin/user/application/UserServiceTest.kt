@@ -2,6 +2,7 @@ package com.board.kotlin.user.application
 
 import com.board.kotlin.common.domain.entity.User
 import com.board.kotlin.common.infra.UserRepository
+import com.board.kotlin.user.domain.dto.request.UserUpdateReq
 import com.board.kotlin.user.domain.dto.response.UserDetailRes
 import com.board.kotlin.user.domain.dto.response.UserListRes
 import org.assertj.core.api.Assertions.assertThat
@@ -81,5 +82,21 @@ internal class UserServiceTest {
         assertThat(userDetail.id).isEqualTo(id)
         assertThat(userDetail.email).isEqualTo(email)
         assertThat(userDetail.password).isEqualTo(password)
+    }
+
+    @ParameterizedTest
+    @CsvSource("1, update@email.com, update", "2, update@test.com, update")
+    fun `User 수정 Service`(id: Long, email: String, password: String) {
+        given(userRepository.findById(id)).willReturn(Optional.of(User(email, password, id)))
+        given(userRepository.save(User(email, password, id))).willReturn(User(email, password, id))
+
+        val userUpdate = userService.update(id, UserUpdateReq(email, password))
+
+        verify(userRepository).save(User(email, password, id))
+        verify(userRepository).findById(id)
+
+        assertThat(userUpdate.id).isEqualTo(id)
+        assertThat(userUpdate.email).isEqualTo(email)
+        assertThat(userUpdate.password).isEqualTo(password)
     }
 }

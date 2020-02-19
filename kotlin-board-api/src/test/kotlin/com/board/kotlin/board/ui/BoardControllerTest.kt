@@ -134,6 +134,34 @@ internal class BoardControllerTest(webApplicationContext: WebApplicationContext)
     }
 
     @ParameterizedTest
+    @CsvSource("1, 제목 수정1, 내용 수정1", "2, 제목 수정2, 내용 수정2")
+    fun `Board 수정 Controller Board Not Found`(id: Long, title: String, content: String) {
+        val objectMapper = ObjectMapper()
+        val boardJson: String = objectMapper.writeValueAsString(BoardUpdateReq(title, content))
+
+        given(boardService.update(id, title, content)).willThrow(BoardNotFoundException())
+
+        mockMvc.perform(put("/board/$id")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(boardJson))
+                .andExpect(status().isNotFound)
+
+        verify(boardService).update(id, title, content)
+    }
+
+    @ParameterizedTest
+    @CsvSource("1, '', 'test'", "2, 'test', ''")
+    fun `Board 수정 Controller 필수 파라미터 누락`(id: Long, title: String, content: String) {
+        val objectMapper = ObjectMapper()
+        val boardJson: String = objectMapper.writeValueAsString(BoardUpdateReq(title, content))
+
+        mockMvc.perform(put("/board/$id")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(boardJson))
+                .andExpect(status().isBadRequest)
+    }
+
+    @ParameterizedTest
     @CsvSource("1", "2")
     fun `Board 삭제 Controller`(id: Long) {
         given(boardService.delete(id)).willReturn("{}")
