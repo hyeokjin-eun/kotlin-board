@@ -13,6 +13,7 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import java.util.*
 
 @ExtendWith(SpringExtension::class)
 @DataJpaTest
@@ -55,5 +56,19 @@ class UserRepositoryTest {
         assertThat(userList[0].email).isEqualTo("email@email.com")
         assertThat(userList[1].email).isEqualTo("test@test.com")
         assertThat(userList[2].email).isEqualTo("alvin@test.com")
+    }
+
+    @ParameterizedTest
+    @CsvSource("1, email@email.com, password", "2, test@test.com, test")
+    fun `User 상세 조회 Repository`(id: Long, email: String, password: String) {
+        val mockUser = User(email, password, id)
+
+        given(userRepository.findById(id)).willReturn(Optional.of(mockUser))
+
+        val userDetail = userRepository.findById(id)
+
+        assertThat(userDetail.get().id).isEqualTo(id)
+        assertThat(userDetail.get().email).isEqualTo(email)
+        assertThat(userDetail.get().password).isEqualTo(password)
     }
 }

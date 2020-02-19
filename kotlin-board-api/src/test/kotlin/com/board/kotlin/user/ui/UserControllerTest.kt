@@ -4,6 +4,7 @@ import com.board.kotlin.ControllerTestBaseConfig
 import com.board.kotlin.common.domain.entity.User
 import com.board.kotlin.user.application.UserService
 import com.board.kotlin.user.domain.dto.response.UserCreateRes
+import com.board.kotlin.user.domain.dto.response.UserDetailRes
 import com.board.kotlin.user.domain.dto.response.UserListRes
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
@@ -85,5 +86,19 @@ internal class UserControllerTest(webApplicationContext: WebApplicationContext) 
                 .andExpect(jsonPath("\$.[2].email").value("alvin@test.com"))
 
         verify(userService).list()
+    }
+
+    @ParameterizedTest
+    @CsvSource("1, email@email.com, password", "2, test@test.com, test")
+    fun `User 상세 조회 Controller`(id: Long, email: String, password: String) {
+        given(userService.detail(id)).willReturn(UserDetailRes(id, email, password))
+
+        mockMvc.perform(get("/user/$id"))
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("\$.id").value(id))
+                .andExpect(jsonPath("\$.email").value(email))
+                .andExpect(jsonPath("\$.password").value(password))
+
+        verify(userService).detail(id)
     }
 }

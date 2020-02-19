@@ -2,7 +2,9 @@ package com.board.kotlin.user.application
 
 import com.board.kotlin.common.domain.entity.User
 import com.board.kotlin.common.infra.UserRepository
+import com.board.kotlin.user.domain.Exception.UserNotFoundException
 import com.board.kotlin.user.domain.dto.response.UserCreateRes
+import com.board.kotlin.user.domain.dto.response.UserDetailRes
 import com.board.kotlin.user.domain.dto.response.UserListRes
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
@@ -21,5 +23,13 @@ class UserService(private var userRepository: UserRepository) {
                     return@map UserListRes(it.id!!, it.email, it.password)
                 }
                 .collect(Collectors.toList())
+    }
+
+    fun detail(id: Long): UserDetailRes {
+        return userRepository.findById(id)
+                .map {
+                    return@map UserDetailRes(it.id!!, it.email, it.password)
+                }
+                .orElseThrow{ UserNotFoundException() }
     }
 }

@@ -3,6 +3,7 @@ package com.board.kotlin.user.ui
 import com.board.kotlin.user.application.UserService
 import com.board.kotlin.user.domain.dto.request.UserCreateReq
 import com.board.kotlin.user.domain.dto.response.UserCreateRes
+import com.board.kotlin.user.domain.dto.response.UserDetailRes
 import com.board.kotlin.user.domain.dto.response.UserListRes
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -21,8 +22,14 @@ class UserController(val userService: UserService) {
     }
 
     @GetMapping("")
-    @ApiOperation(value = "유저 목록 조회", notes = "유저 목록 조회")
+    @ApiOperation(value = "유저 목록 조회", notes = "유저 목록을 조회한다.")
     fun list(): List<UserListRes> {
         return userService.list()
+    }
+
+    @GetMapping("{id}")
+    @ApiOperation(value = "유저 상세 조회", notes = "유저 상세 정보를 조회한다.")
+    fun detail(@PathVariable id: Long): UserDetailRes {
+        return userService.detail(id)
     }
 }
