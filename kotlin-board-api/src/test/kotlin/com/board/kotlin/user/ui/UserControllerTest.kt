@@ -19,8 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.web.context.WebApplicationContext
 
 @WebMvcTest(UserController::class)
@@ -162,5 +161,26 @@ internal class UserControllerTest(webApplicationContext: WebApplicationContext) 
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(userJson))
                 .andExpect(status().isBadRequest)
+    }
+
+    @ParameterizedTest
+    @CsvSource("1", "2")
+    fun `User 삭제 Controller`(id: Long) {
+        given(userService.delete(id)).willReturn("{}")
+
+        mockMvc.perform(delete("/user/$id"))
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("\$").value(""))
+
+        verify(userService).delete(id)
+    }
+
+    @ParameterizedTest
+    @CsvSource("404")
+    fun `User 삭제 Controller User Not Found`(id: Long) {
+        given(userService.delete(id)).willThrow(UserNotFoundException())
+
+        mockMvc.perform(delete("/user/$id"))
+                .andExpect(status().isNotFound)
     }
 }

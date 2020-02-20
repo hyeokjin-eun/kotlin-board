@@ -99,4 +99,19 @@ internal class UserServiceTest {
         assertThat(userUpdate.email).isEqualTo(email)
         assertThat(userUpdate.password).isEqualTo(password)
     }
+
+    @ParameterizedTest
+    @CsvSource("1", "2")
+    fun `User 삭제 Service`(id: Long) {
+        val mockUser = User("email@email.com", "password", id)
+
+        given(userRepository.findById(id)).willReturn(Optional.of(mockUser))
+
+        val userDelete = userService.delete(id)
+
+        verify(userRepository).findById(id)
+        verify(userRepository).delete(mockUser)
+
+        assertThat(userDelete).isEqualTo("{}")
+    }
 }

@@ -168,6 +168,7 @@ internal class BoardControllerTest(webApplicationContext: WebApplicationContext)
 
         mockMvc.perform(delete("/board/$id"))
                 .andExpect(status().isOk)
+                .andExpect(jsonPath("\$").value(""))
 
         verify(boardService).delete(id)
     }

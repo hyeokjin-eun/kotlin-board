@@ -45,4 +45,13 @@ class UserService(private var userRepository: UserRepository) {
                 }
                 .orElseThrow{ UserNotFoundException() }
     }
+
+    fun delete(id: Long): String {
+        return userRepository.findById(id)
+                .map {
+                    userRepository.delete(it)
+                    return@map "{}"
+                }
+                .orElseThrow { UserNotFoundException() }
+    }
 }

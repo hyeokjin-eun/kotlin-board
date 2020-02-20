@@ -40,4 +40,10 @@ class UserController(val userService: UserService) {
     fun update(@PathVariable id: Long, @RequestBody @Validated userUpdateReq: UserUpdateReq): UserUpdateRes {
         return userService.update(id, userUpdateReq)
     }
+
+    @DeleteMapping("{id}")
+    @ApiOperation(value = "유저 삭제", notes = "유저를 삭제한다.")
+    fun delete(@PathVariable id:Long): String {
+        return userService.delete(id)
+    }
 }
