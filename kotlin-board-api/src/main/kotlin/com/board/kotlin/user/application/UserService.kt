@@ -14,9 +14,9 @@ import java.util.stream.Collectors
 @Service
 class UserService(private var userRepository: UserRepository) {
 
-    fun create(email: String, password: String): UserCreateRes {
-        val user = userRepository.save(User(email, password))
-        return UserCreateRes(user.id!!, user.email, user.password)
+    fun create(email: String, password: String, name: String): UserCreateRes {
+        val user = userRepository.save(User(email, password, name))
+        return UserCreateRes(user.id!!, user.email, user.password, user.name)
     }
 
     fun list(): List<UserListRes> {
@@ -38,7 +38,7 @@ class UserService(private var userRepository: UserRepository) {
     fun update(id: Long, userUpdateReq: UserUpdateReq): UserUpdateRes {
         return userRepository.findById(id)
                 .map {
-                    return@map userRepository.save(User(it.email, it.password, it.id))
+                    return@map userRepository.save(User(it.email, it.password, it.name, it.id))
                 }
                 .map {
                     return@map UserUpdateRes(it.id!!, it.email, it.password)

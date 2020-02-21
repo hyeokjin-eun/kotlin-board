@@ -11,15 +11,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 class UserTest {
 
     @ParameterizedTest
-    @CsvSource("1, email@email.com, password", "2, test@test.com, test")
-    fun `User 객체 생성`(id: Long, email: String, password:  String) {
-        val user = User(email, password, id)
+    @CsvSource("1, email@email.com, password, kim", "2, test@test.com, test, pack")
+    fun `User 객체 생성`(id: Long, email: String, password:  String, name: String) {
+        val user = User(email, password, name, id)
 
         assertThat(user.id).isEqualTo(id)
         assertThat(user.email).isEqualTo(email)
         assertThat(user.password).isEqualTo(password)
 
-        val user2 = User(email, password)
+        val user2 = User(email, password, name)
 
         assertThat(user2.email).isEqualTo(email)
         assertThat(user2.password).isEqualTo(password)

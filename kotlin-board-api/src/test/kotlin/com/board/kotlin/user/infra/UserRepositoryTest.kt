@@ -28,13 +28,13 @@ class UserRepositoryTest {
     }
 
     @ParameterizedTest
-    @CsvSource("1, email@email.com, password", "2, test@test.com, test")
-    fun `User 저장 Repository`(id: Long, email: String, password: String) {
-        val mockUser = User(email, password, id)
+    @CsvSource("1, email@email.com, password, kim", "2, test@test.com, test, pack")
+    fun `User 저장 Repository`(id: Long, email: String, password: String, name: String) {
+        val mockUser = User(email, password, name, id)
 
-        given(userRepository.save(User(email, password))).willReturn(mockUser)
+        given(userRepository.save(User(email, password, name))).willReturn(mockUser)
 
-        val newUser = userRepository.save(User(email, password))
+        val newUser = userRepository.save(User(email, password, name))
 
         assertThat(newUser.email).isEqualTo(email)
         assertThat(newUser.password).isEqualTo(password)
@@ -44,9 +44,9 @@ class UserRepositoryTest {
     @Test
     fun `User 목록 조회 Repository`() {
         val mockUserList = listOf(
-                User("email@email.com", "password", 1L),
-                User("test@test.com", "test", 2L),
-                User("alvin@test.com", "alvin", 3L)
+                User("email@email.com", "password", "kim", 1L),
+                User("test@test.com", "test", "pack", 2L),
+                User("alvin@test.com", "alvin", "alvin", 3L)
         )
 
         given(userRepository.findAll()).willReturn(mockUserList)
@@ -59,9 +59,9 @@ class UserRepositoryTest {
     }
 
     @ParameterizedTest
-    @CsvSource("1, email@email.com, password", "2, test@test.com, test")
-    fun `User 상세 조회 Repository`(id: Long, email: String, password: String) {
-        val mockUser = User(email, password, id)
+    @CsvSource("1, email@email.com, password, kim", "2, test@test.com, test, pack")
+    fun `User 상세 조회 Repository`(id: Long, email: String, password: String, name: String) {
+        val mockUser = User(email, password, name, id)
 
         given(userRepository.findById(id)).willReturn(Optional.of(mockUser))
 

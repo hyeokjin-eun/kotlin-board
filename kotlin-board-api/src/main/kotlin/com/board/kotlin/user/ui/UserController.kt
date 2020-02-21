@@ -20,7 +20,7 @@ class UserController(val userService: UserService) {
     @PostMapping("")
     @ApiOperation(value = "유저 생성", notes = "유저 회원 가입")
     fun create(@RequestBody @Validated userCreateReq: UserCreateReq): UserCreateRes {
-        return userService.create(userCreateReq.email, userCreateReq.password)
+        return userService.create(userCreateReq.email, userCreateReq.password, userCreateReq.name)
     }
 
     @GetMapping("")

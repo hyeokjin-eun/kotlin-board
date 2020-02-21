@@ -8,6 +8,8 @@ data class User (
 
         var password: String,
 
+        var name: String,
+
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Long? = null

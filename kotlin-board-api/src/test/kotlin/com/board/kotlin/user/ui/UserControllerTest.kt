@@ -29,12 +29,12 @@ internal class UserControllerTest(webApplicationContext: WebApplicationContext) 
     private lateinit var userService: UserService
 
     @ParameterizedTest
-    @CsvSource("1, email@email.com, password", "2, test@test.com, test")
-    fun `User 저장 Controller`(id: Long, email: String, password: String) {
+    @CsvSource("1, email@email.com, password, kim", "2, test@test.com, test, pack")
+    fun `User 저장 Controller`(id: Long, email: String, password: String, name: String) {
         val objectMapper = ObjectMapper()
-        val userJson = objectMapper.writeValueAsString(User(email, password))
+        val userJson = objectMapper.writeValueAsString(User(email, password, name))
 
-        given(userService.create(email, password)).willReturn(UserCreateRes(id, email, password))
+        given(userService.create(email, password, name)).willReturn(UserCreateRes(id, email, password, name))
 
         mockMvc.perform(post("/user")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -43,14 +43,17 @@ internal class UserControllerTest(webApplicationContext: WebApplicationContext) 
                 .andExpect(jsonPath("\$.email").value(email))
                 .andExpect(jsonPath("\$.password").value(password))
 
-        verify(userService).create(email, password)
+        verify(userService).create(email, password, name)
     }
 
     @ParameterizedTest
-    @CsvSource("email, password")
-    fun `User 저장 Controller 이메일 형식 오류`(email: String, password: String) {
+    @CsvSource("''", "email")
+    fun `User 저장 Controller 이메일 Validation Check`(email: String) {
+        val password = "password"
+        val name = "kim"
+
         val objectMapper = ObjectMapper()
-        val userJson = objectMapper.writeValueAsString(User(email, password))
+        val userJson = objectMapper.writeValueAsString(User(email, password, name))
 
         mockMvc.perform(post("/user")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -59,10 +62,28 @@ internal class UserControllerTest(webApplicationContext: WebApplicationContext) 
     }
 
     @ParameterizedTest
-    @CsvSource("email@email.com, ''")
-    fun `User 저장 Controller 비밀번호 누락`(email: String, password: String) {
+    @CsvSource("''")
+    fun `User 저장 Controller 비밀번호 Validation Check`(password: String) {
+        val email = "email@email.com"
+        val name = "kim"
+
         val objectMapper = ObjectMapper()
-        val userJson = objectMapper.writeValueAsString(User(email, password))
+        val userJson = objectMapper.writeValueAsString(User(email, password, name))
+
+        mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userJson))
+                .andExpect(status().isBadRequest)
+    }
+
+    @ParameterizedTest
+    @CsvSource("1", "!@#")
+    fun `User 저장 Controller 이름 Validation Check`(name: String) {
+        val email = "email@email.com"
+        val password = "password"
+
+        val objectMapper = ObjectMapper()
+        val userJson = objectMapper.writeValueAsString(User(email, password, name))
 
         mockMvc.perform(post("/user")
                 .contentType(MediaType.APPLICATION_JSON)

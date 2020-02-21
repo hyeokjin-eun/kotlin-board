@@ -15,4 +15,8 @@ data class UserCreateRes (@JsonProperty(value = "id")
 
                           @JsonProperty(value = "password")
                           @ApiModelProperty(value = "비밀번호", required = true, dataType = "String", position = 3)
-                          var password: String)
+                          var password: String,
+
+                          @JsonProperty(value = "name")
+                          @ApiModelProperty(value = "이름", required = true, dataType = "String", position = 4)
+                          var name: String)
