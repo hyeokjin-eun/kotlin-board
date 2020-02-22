@@ -54,4 +54,8 @@ class UserService(private var userRepository: UserRepository) {
                 }
                 .orElseThrow { UserNotFoundException() }
     }
+
+    fun authenticate(email: String, password: String): User {
+        return User("email@email.com", "password", "kim", 1)
+    }
 }
