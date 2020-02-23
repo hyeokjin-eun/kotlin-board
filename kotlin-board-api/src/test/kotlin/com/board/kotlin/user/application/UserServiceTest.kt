@@ -2,6 +2,7 @@ package com.board.kotlin.user.application
 
 import com.board.kotlin.common.domain.entity.User
 import com.board.kotlin.common.infra.UserRepository
+import com.board.kotlin.common.util.JwtToken
 import com.board.kotlin.user.domain.dto.request.UserUpdateReq
 import com.board.kotlin.user.domain.dto.response.UserDetailRes
 import com.board.kotlin.user.domain.dto.response.UserListRes
@@ -29,10 +30,13 @@ internal class UserServiceTest {
     @Mock
     private lateinit var userRepository: UserRepository
 
+    @Mock
+    private lateinit var jwtToken: JwtToken
+
     @BeforeEach
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        userService = UserService(userRepository)
+        this.userService = UserService(userRepository, jwtToken)
     }
 
     @ParameterizedTest
@@ -53,8 +57,8 @@ internal class UserServiceTest {
     fun `User 목록 조회 Service`() {
         val mockUserList = listOf(
                 User("email@email.com", "password", "kim", 1L),
-                User("test@test.com", "test", "pack",2L),
-                User("alvin@test.com", "alvin", "alvin",3L)
+                User("test@test.com", "test", "pack", 2L),
+                User("alvin@test.com", "alvin", "alvin", 3L)
         )
 
         given(userRepository.findAll()).willReturn(mockUserList)
@@ -113,5 +117,12 @@ internal class UserServiceTest {
         verify(userRepository).delete(mockUser)
 
         assertThat(userDelete).isEqualTo("{}")
+    }
+
+    @ParameterizedTest
+    @CsvSource("email@email.com, password", "test@test.com, test")
+    fun `User 인증 Service`(email: String, password: String) {
+
+        val user = userService.authenticate(email, password)
     }
 }

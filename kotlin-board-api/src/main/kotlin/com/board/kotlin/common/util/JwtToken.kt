@@ -6,7 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
 import java.security.Key
 
-class JwtToken(secret: String) {
+open class JwtToken(secret: String) {
 
     private var key:Key = Keys.hmacShaKeyFor(secret.toByteArray())
 

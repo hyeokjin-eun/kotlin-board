@@ -2,6 +2,7 @@ package com.board.kotlin.user.application
 
 import com.board.kotlin.common.domain.entity.User
 import com.board.kotlin.common.infra.UserRepository
+import com.board.kotlin.common.util.JwtToken
 import com.board.kotlin.user.domain.Exception.UserNotFoundException
 import com.board.kotlin.user.domain.dto.request.UserUpdateReq
 import com.board.kotlin.user.domain.dto.response.UserCreateRes
@@ -12,7 +13,8 @@ import org.springframework.stereotype.Service
 import java.util.stream.Collectors
 
 @Service
-class UserService(private var userRepository: UserRepository) {
+class UserService(private val userRepository: UserRepository,
+                  private val jwtToken: JwtToken) {
 
     fun create(email: String, password: String, name: String): UserCreateRes {
         val user = userRepository.save(User(email, password, name))
@@ -55,7 +57,7 @@ class UserService(private var userRepository: UserRepository) {
                 .orElseThrow { UserNotFoundException() }
     }
 
-    fun authenticate(email: String, password: String): User {
-        return User("email@email.com", "password", "kim", 1)
+    fun authenticate(email: String, password: String): String {
+        return "test"
     }
 }
